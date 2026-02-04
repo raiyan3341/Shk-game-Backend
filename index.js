@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 app.use(cors({
     origin: [
         'http://localhost:5175', // Local development er jonno
-        'https://your-frontend-project.vercel.app' 
+        'https://rshk-game.vercel.app' 
     ],
     credentials: true
 }));
