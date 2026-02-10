@@ -33,27 +33,30 @@ async function run() {
     console.log("Successfully connected to MongoDB!");
 
     // 1. Save or Update Score API (POST)
-    app.post('/api/save-score', async (req, res) => {
-        try {
-            const data = req.body;
-            const query = { playerEmail: data.email };
-            const updateDoc = {
-                $set: {
-                    playerName: data.name,
-                    playerEmail: data.email,
-                    playerScore: data.score,
-                    playerPhoto: data.photo,
-                    lastUpdated: new Date()
-                }
-            };
-            const result = await scoresCollection.updateOne(query, updateDoc, { upsert: true });
-            res.send(result);
-        } catch (error) {
-            console.error("Save Score Error:", error);
-            res.status(500).send({ message: "Failed to save score" });
-        }
-    });
+    // 1. Save or Update Score API (POST)
+app.post('/api/save-score', async (req, res) => {
+    try {
+        const data = req.body;
+        const query = { playerEmail: data.email };
+        const updateDoc = {
+            $set: {
+                playerName: data.name,
+                playerEmail: data.email,
+                playerPhoto: data.photo,
+                lastUpdated: new Date()
+            },
+            $max: {
+                playerScore: data.score 
+            }
+        };
 
+        const result = await scoresCollection.updateOne(query, updateDoc, { upsert: true });
+        res.send(result);
+    } catch (error) {
+        console.error("Save Score Error:", error);
+        res.status(500).send({ message: "Failed to save score" });
+    }
+});
     // 2. Leaderboard Fetch API (GET)
     app.get('/all-scores', async (req, res) => {
       try {
